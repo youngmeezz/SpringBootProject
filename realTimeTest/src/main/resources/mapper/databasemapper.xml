@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.realTimeTest.dao.DbMapper">
+    <select id="getList" resultType="com.example.realTimeTest.dto.TestDTO" parameterType="Map">
+        SELECT 
+        		 SEQ
+        		,CRTDT
+        		,SUBJECT
+        		,CONTENTS
+         FROM T_LIST
+        WHERE 1=1
+        <if test="keyword != null and keyword != '' ">
+				AND SUBJECT like CONCAT('%', #{keyword}, '%')
+		</if>	
+    </select>
+   
+   <insert id="insertList" parameterType="Map">
+        INSERT INTO S_LIST
+        	( 
+        		 SEQ
+        		,CRTDT
+        		,SUBJECT
+        		,USER
+        	)
+        VALUES
+        	(
+        		 (select ifnull(max(a.SEQ), 0)+1 from S_LIST a)
+        		,CURRENT_TIMESTAMP
+        		,#{keyword}
+        		,#{user}
+        	)
+      
+    </insert>
+    
+      <select id="getListSearch" resultType="com.example.realTimeTest.dto.SearchDTO" parameterType="Map">
+        SELECT 
+        		 SEQ
+        		,CRTDT
+        		,SUBJECT
+        		,USER
+         FROM S_LIST
+        WHERE 1=1
+        <if test="keyword != null and keyword != '' ">
+				AND SUBJECT like CONCAT('%', #{keyword}, '%')
+		</if>	
+    </select>
+    
+    <select id="getListLast" resultType="com.example.realTimeTest.dto.TestDTO" parameterType="Map">
+        SELECT 
+        		 SEQ
+        		,CRTDT
+        		,SUBJECT
+        		,CONTENTS
+         FROM T_LIST
+        WHERE 1=1
+        <if test="keyword != null and keyword != '' ">
+				AND SUBJECT like CONCAT('%', #{keyword}, '%')
+		</if>	
+		ORDER BY CRTDT DESC
+		LIMIT 1
+    </select>
+    
+       <select id="getSearchLast" resultType="com.example.realTimeTest.dto.TestDTO" parameterType="Map">
+        SELECT 
+        		count(*)
+         FROM T_LIST
+        WHERE 1=1
+        <if test="keyword != null and keyword != '' ">
+				AND SUBJECT like CONCAT('%', #{keyword}, '%')
+		</if>	
+    </select>
+</mapper>
